@@ -20,6 +20,18 @@ const utils = {
     }
     return { x, y };
   },
+  oppositeDirection(direction) {
+    switch (direction) {
+      case "down":
+        return "up";
+      case "up":
+        return "down";
+      case "right":
+        return "left";
+      default:
+        return "right";
+    }
+  },
   emitEvent(name, detail) {
     const event = new CustomEvent(name, {
       detail,

@@ -9,7 +9,7 @@ class OverworldMap {
     this.upperImage = new Image();
     this.upperImage.src = config.upperSrc;
 
-    this.isCutscenePlaying = true;
+    this.isCutscenePlaying = false;
   }
 
   drawLowerImage = (ctx, cameraPerson) => {
@@ -57,6 +57,22 @@ class OverworldMap {
     }
 
     this.isCutscenePlaying = false;
+
+    // Reset NPC to go back to doing their behaviourLoop
+    Object.values(this.gameObjects).forEach((object) =>
+      object.doBehaviourEvent(this)
+    );
+  }
+
+  checkForActionCutscene() {
+    const hero = this.gameObjects["hero"];
+    const nextCoords = utils.nextPosition(hero.x, hero.y, hero.direction);
+    const match = Object.values(this.gameObjects).find((object) => {
+      return object.x === nextCoords.x && object.y === nextCoords.y;
+    });
+    if (!this.isCutscenePlaying && match && match.talking.length) {
+      this.startCutScene(match.talking[0].events);
+    }
   }
 
   addWall(x, y) {
@@ -92,6 +108,19 @@ window.OverworldMaps = {
           { type: "stand", direction: "down", time: 800 },
           { type: "stand", direction: "right", time: 400 },
           { type: "stand", direction: "left", time: 800 },
+        ],
+        talking: [
+          {
+            events: [
+              {
+                type: "textMessage",
+                text: "Can't you see I'm busy?",
+                faceHero: "npcA",
+              },
+              { type: "textMessage", text: "Go away!" },
+              { type: "walk", direction: "left", who: "hero" },
+            ],
+          },
         ],
       }),
       npcB: new Person({

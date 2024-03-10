@@ -1,7 +1,7 @@
 class OverworldEvent {
-  constructor(config) {
-    this.map = config.map;
-    this.event = config.event;
+  constructor({ map, event }) {
+    this.map = map;
+    this.event = event;
   }
 
   stand(resolve) {
@@ -48,6 +48,20 @@ class OverworldEvent {
     };
 
     document.addEventListener("PersonWalkComplete", completeHandler);
+  }
+
+  textMessage(resolve) {
+    if (this.event.faceHero) {
+      const obj = this.map.gameObjects[this.event.faceHero];
+      obj.direction = utils.oppositeDirection(
+        this.map.gameObjects["hero"].direction
+      );
+    }
+    const message = new TextMessage({
+      text: this.event.text,
+      onComplete: () => resolve(),
+    });
+    message.init(document.querySelector(".game-container"));
   }
 
   init() {

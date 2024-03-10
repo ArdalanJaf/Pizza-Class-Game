@@ -2,6 +2,7 @@ class Person extends GameObject {
   constructor(config) {
     super(config);
     this.movingProgressRemaining = 0;
+    this.isStanding = false;
     this.directionUpdate = {
       up: ["y", -1],
       down: ["y", 1],
@@ -55,8 +56,10 @@ class Person extends GameObject {
     }
 
     if (behaviour.type === "stand") {
+      this.isStanding = true;
       setTimeout(() => {
         utils.emitEvent("PersonStandComplete", { whoId: this.id });
+        this.isStanding = false;
       }, behaviour.time);
     }
   }
