@@ -1,7 +1,8 @@
 class OverworldMap {
   constructor(config) {
+    this.overworld = null;
     this.gameObjects = config.gameObjects;
-    this.cutsceneSpaces = config.cutsceneSpaces;
+    this.cutsceneSpaces = config.cutsceneSpaces || [];
     this.walls = config.walls || {};
 
     this.lowerImage = new Image();
@@ -168,26 +169,39 @@ window.OverworldMaps = {
           ],
         },
       ],
+      [utils.asGridCoord(5, 10)]: [
+        {
+          events: [{ type: "changeMap", map: "Kitchen" }],
+        },
+      ],
     },
   },
   Kitchen: {
     lowerSrc: "/images/maps/KitchenLower.png",
     upperSrc: "/images/maps/KitchenUpper.png",
     gameObjects: {
-      hero: new GameObject({
-        x: 3,
-        y: 1,
+      hero: new Person({
+        x: utils.withGrid(3),
+        y: utils.withGrid(5),
+        isPlayerControlled: true,
       }),
-      npc2: new GameObject({
-        x: 1,
-        y: 8,
-        src: "/images/characters/people/npc2.png",
+      npcD: new Person({
+        x: utils.withGrid(3),
+        y: utils.withGrid(7),
+        src: "/images/characters/people/npc4.png",
+        talking: [
+          {
+            events: [
+              { type: "textMessage", text: "You made it!", faceHero: "npcD" },
+            ],
+          },
+        ],
       }),
-      npc3: new GameObject({
-        x: 2,
-        y: 8,
-        src: "/images/characters/people/npc3.png",
-      }),
+      // npc3: new Person({
+      //   x: utils.withGrid(2),
+      //   y: utils.withGrid(8),
+      //   src: "/images/characters/people/npc3.png",
+      // }),
     },
   },
 };
