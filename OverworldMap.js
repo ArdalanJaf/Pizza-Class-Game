@@ -1,6 +1,7 @@
 class OverworldMap {
   constructor(config) {
     this.gameObjects = config.gameObjects;
+    this.cutsceneSpaces = config.cutsceneSpaces;
     this.walls = config.walls || {};
 
     this.lowerImage = new Image();
@@ -75,6 +76,14 @@ class OverworldMap {
     }
   }
 
+  checkForFootstepCutscene() {
+    const hero = this.gameObjects["hero"];
+    const match = this.cutsceneSpaces[`${hero.x},${hero.y}`];
+    if (!this.isCutscenePlaying && match) {
+      this.startCutScene(match[0].events);
+    }
+  }
+
   addWall(x, y) {
     this.walls[`${x},${y}`] = true;
   }
@@ -135,12 +144,30 @@ window.OverworldMaps = {
           { type: "walk", direction: "down" },
         ],
       }),
+      npcC: new Person({
+        x: utils.withGrid(7),
+        y: utils.withGrid(3),
+        src: "/images/characters/people/npc3.png",
+      }),
     },
     walls: {
       [utils.asGridCoord(7, 6)]: true,
       [utils.asGridCoord(8, 6)]: true,
       [utils.asGridCoord(7, 7)]: true,
       [utils.asGridCoord(8, 7)]: true,
+    },
+    cutsceneSpaces: {
+      [utils.asGridCoord(7, 4)]: [
+        {
+          events: [
+            { type: "walk", direction: "down", who: "hero" },
+            // { type: "stand", direction: "up", who: "hero" },
+            { type: "walk", direction: "down", who: "npcC" },
+            { type: "textMessage", text: "You can't come in!" },
+            { type: "walk", direction: "up", who: "npcC" },
+          ],
+        },
+      ],
     },
   },
   Kitchen: {
